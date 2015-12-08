@@ -1,0 +1,285 @@
+int worldX, worldY, buttonCount = 0, radius = 50, blockPlacementX, blockPlacementY;
+float distance = 0;
+PVector character;
+MazeBlocks blocks;
+MazeBlocks blocksTwo;
+
+void setup()
+{
+  size(600, 600);
+  character = new PVector(300, 300);
+  blocks = new MazeBlocks(5, 5);
+  blocksTwo = new MazeBlocks(400,400);
+}
+
+void draw()
+{
+  background(255);
+  light();
+  character();
+  blocks.display();
+  blocks.update();
+  blocksTwo.display();
+  blocksTwo.update();
+  
+}
+
+void keyPressed(){
+  blocks.keyPressed();
+  blocksTwo.keyPressed();
+}
+
+//creates character body
+//the sare is 30 30 from center mode
+void character()
+{
+  ellipseMode(CENTER);
+  fill(0);
+  ellipse(300, 300, 30, 30);
+}
+
+//creates light halo
+void light()
+{
+  fill(255);
+  ellipseMode(RADIUS);
+  ellipse(character.x, character.y, radius, radius);
+}
+/*void keyPressed()
+ {
+ if(blockPlacementX >= 255 && blockPlacementX <= 300 && blockPlacementY > 260 && blockPlacementY < 340)
+ {
+ if(keyCode == UP)
+ {
+ worldY += 10;
+ }
+ 
+ if(keyCode == DOWN)
+ {
+ worldY -= 10;
+ }
+ 
+ if(keyCode == RIGHT)
+ {
+ worldX -=10;
+ }
+ }
+ 
+ else if (blockPlacementX <= 345 && blockPlacementX >= 300&& blockPlacementY > 260 && blockPlacementY < 340)
+ {
+ if(keyCode == UP)
+ {
+ worldY += 10;
+ }
+ 
+ if(keyCode == DOWN)
+ {
+ worldY -= 10;
+ }
+ 
+ if(keyCode == LEFT)
+ {
+ worldX += 10;
+ }
+ }
+ 
+ else if(blockPlacementY >= 255 && blockPlacementY <= 300 && blockPlacementX > 260 && blockPlacementX < 340)
+ {
+ if(keyCode == DOWN)
+ {
+ worldY -= 10;
+ }
+ 
+ if(keyCode == LEFT)
+ {
+ worldX +=10;
+ }
+ 
+ if(keyCode == RIGHT)
+ {
+ worldX -= 10;
+ }
+ }
+ 
+ else if(blockPlacementY <= 345 && blockPlacementY >= 300 && blockPlacementX > 260 && blockPlacementX < 340)
+ {
+ if(keyCode == UP)
+ {
+ worldY += 10;
+ }
+ 
+ if(keyCode == LEFT)
+ {
+ worldX +=10;
+ }
+ 
+ if(keyCode == RIGHT)
+ {
+ worldX -= 10;
+ }
+ }
+ 
+ else
+ {
+ if(keyCode == UP)
+ {
+ worldY += 10;
+ }
+ 
+ if(keyCode == DOWN)
+ {
+ worldY -= 10;
+ }
+ 
+ if(keyCode == LEFT)
+ {
+ worldX +=10;
+ }
+ 
+ if(keyCode == RIGHT)
+ {
+ worldX -= 10;
+ }
+ } */
+ 
+ 
+ // MazeBlocks Class
+class MazeBlocks
+{
+  int blockFill, blockCenterX, blockCenterY, blockRadius = 25;
+
+  //constructor
+  MazeBlocks()
+  {
+    blockCenterX = 5;
+    blockCenterY = 5;
+  }
+
+  MazeBlocks(int _blockCenterX, int _blockCenterY)
+  {
+    blockCenterX = _blockCenterX;
+    blockCenterY = _blockCenterY;
+  }
+
+  //updates position
+  void update()
+  {
+    distance = dist(blockPlacementX, blockPlacementY, character.x, character.y);
+    blockPlacementX = blockCenterX+worldX;
+    blockPlacementY = blockCenterY +worldY;
+
+
+    //allows blocks to light up when character gets close
+    if (distance  < (radius + blockRadius))
+    {
+      stroke(0);
+      blockFill = 180;
+      println("block placementx:" + blockPlacementX + ", block placement y:" + blockPlacementY);
+    } else
+    {
+      blockFill = 0;
+      println("block placementx:" + blockPlacementX + ", block placement y:" + blockPlacementY);
+    }
+  }
+
+
+  //displays block
+  //suare around is 50 50
+  void display()
+  {
+    stroke(255);
+    fill(blockFill);
+    ellipseMode(RADIUS);
+    ellipse(blockPlacementX, blockPlacementY, blockRadius, blockRadius);
+  }
+
+void keyPressed()
+{
+  if (blockPlacementX >= 255 && blockPlacementX <= 300 && blockPlacementY > 260 && blockPlacementY < 340)
+  {
+    if (keyCode == UP)
+    {
+      worldY += 10;
+    }
+
+    if (keyCode == DOWN)
+    {
+      worldY -= 10;
+    }
+
+    if (keyCode == RIGHT)
+    {
+      worldX -=10;
+    }
+  } else if (blockPlacementX <= 345 && blockPlacementX >= 300&& blockPlacementY > 260 && blockPlacementY < 340)
+  {
+    if (keyCode == UP)
+    {
+      worldY += 10;
+    }
+
+    if (keyCode == DOWN)
+    {
+      worldY -= 10;
+    }
+
+    if (keyCode == LEFT)
+    {
+      worldX += 10;
+    }
+  } else if (blockPlacementY >= 255 && blockPlacementY <= 300 && blockPlacementX > 260 && blockPlacementX < 340)
+  {
+    if (keyCode == DOWN)
+    {
+      worldY -= 10;
+    }
+
+    if (keyCode == LEFT)
+    {
+      worldX +=10;
+    }
+
+    if (keyCode == RIGHT)
+    {
+      worldX -= 10;
+    }
+  } else if (blockPlacementY <= 345 && blockPlacementY >= 300 && blockPlacementX > 260 && blockPlacementX < 340)
+  {
+    if (keyCode == UP)
+    {
+      worldY += 10;
+    }
+
+    if (keyCode == LEFT)
+    {
+      worldX +=10;
+    }
+
+    if (keyCode == RIGHT)
+    {
+      worldX -= 10;
+    }
+  } else
+  {
+    if (keyCode == UP)
+    {
+      worldY += 10;
+    }
+
+    if (keyCode == DOWN)
+    {
+      worldY -= 10;
+    }
+
+    if (keyCode == LEFT)
+    {
+      worldX +=10;
+    }
+
+    if (keyCode == RIGHT)
+    {
+      worldX -= 10;
+    }
+  }
+}
+}
