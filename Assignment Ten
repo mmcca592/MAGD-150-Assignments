@@ -1,32 +1,42 @@
 int worldX, worldY, buttonCount = 0, radius = 50, blockPlacementX, blockPlacementY;
 float distance = 0;
-PVector character;
-MazeBlocks blocks;
+PVector light;
+MazeBlocks[] blocks;  //this is an array of MazeBlocks
 MazeBlocks blocksTwo;
+
 
 void setup()
 {
   size(600, 600);
-  character = new PVector(300, 300);
-  blocks = new MazeBlocks(5, 5);
-  blocksTwo = new MazeBlocks(400,400);
+  blocks = new MazeBlocks[1000];
+  blocksTwo = new MazeBlocks(100,100);
+  for( int x = 0; x <blocks.length - 1; x++)
+  {
+    blocks[x] = new MazeBlocks();
+  }
 }
 
 void draw()
 {
   background(255);
+  light = new PVector(mouseX, mouseY);
   light();
-  character();
-  blocks.display();
-  blocks.update();
+  
+  blocks[0] = new MazeBlocks(400,400);
+  blocks[0].display();
+  blocks[0].update();
   blocksTwo.display();
   blocksTwo.update();
+  character();
+  
+  
   
 }
 
 void keyPressed(){
-  blocks.keyPressed();
   blocksTwo.keyPressed();
+  blocks[0].keyPressed();
+  
 }
 
 //creates character body
@@ -41,109 +51,33 @@ void character()
 //creates light halo
 void light()
 {
-  fill(255);
+  stroke(0);
+  noFill();
   ellipseMode(RADIUS);
-  ellipse(character.x, character.y, radius, radius);
+  ellipse(light.x, light.y, radius, radius);
 }
-/*void keyPressed()
- {
- if(blockPlacementX >= 255 && blockPlacementX <= 300 && blockPlacementY > 260 && blockPlacementY < 340)
- {
- if(keyCode == UP)
- {
- worldY += 10;
- }
- 
- if(keyCode == DOWN)
- {
- worldY -= 10;
- }
- 
- if(keyCode == RIGHT)
- {
- worldX -=10;
- }
- }
- 
- else if (blockPlacementX <= 345 && blockPlacementX >= 300&& blockPlacementY > 260 && blockPlacementY < 340)
- {
- if(keyCode == UP)
- {
- worldY += 10;
- }
- 
- if(keyCode == DOWN)
- {
- worldY -= 10;
- }
- 
- if(keyCode == LEFT)
- {
- worldX += 10;
- }
- }
- 
- else if(blockPlacementY >= 255 && blockPlacementY <= 300 && blockPlacementX > 260 && blockPlacementX < 340)
- {
- if(keyCode == DOWN)
- {
- worldY -= 10;
- }
- 
- if(keyCode == LEFT)
- {
- worldX +=10;
- }
- 
- if(keyCode == RIGHT)
- {
- worldX -= 10;
- }
- }
- 
- else if(blockPlacementY <= 345 && blockPlacementY >= 300 && blockPlacementX > 260 && blockPlacementX < 340)
- {
- if(keyCode == UP)
- {
- worldY += 10;
- }
- 
- if(keyCode == LEFT)
- {
- worldX +=10;
- }
- 
- if(keyCode == RIGHT)
- {
- worldX -= 10;
- }
- }
- 
- else
- {
- if(keyCode == UP)
- {
- worldY += 10;
- }
- 
- if(keyCode == DOWN)
- {
- worldY -= 10;
- }
- 
- if(keyCode == LEFT)
- {
- worldX +=10;
- }
- 
- if(keyCode == RIGHT)
- {
- worldX -= 10;
- }
- } */
- 
- 
- // MazeBlocks Class
+
+
+void maze()
+{
+  /*
+  //makes 1000 instances of the MazeBlocks class
+  for( int x = 0; x <blocks.length - 1; x++)
+  {
+    blocks[x] = new MazeBlocks();
+  }
+  */
+  
+  blocks[0] = new MazeBlocks(400,400);
+  blocksTwo.display();
+  blocksTwo.update();
+  blocks[0].display();
+  blocks[0].update();
+  
+}
+
+
+// MazeBlocks Class
 class MazeBlocks
 {
   int blockFill, blockCenterX, blockCenterY, blockRadius = 25;
@@ -164,12 +98,12 @@ class MazeBlocks
   //updates position
   void update()
   {
-    distance = dist(blockPlacementX, blockPlacementY, character.x, character.y);
+    distance = dist(blockPlacementX, blockPlacementY, light.x, light.y);
     blockPlacementX = blockCenterX+worldX;
     blockPlacementY = blockCenterY +worldY;
 
 
-    //allows blocks to light up when character gets close
+    //allows blocks to light up when mouse gets close
     if (distance  < (radius + blockRadius))
     {
       stroke(0);
