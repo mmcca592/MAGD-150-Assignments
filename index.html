@@ -453,14 +453,260 @@ void mousePressed()
   <p>The theme for this week was movies.  I believe this was also the week we were introduced to variables.</p>
         <br />
         <br />
-  <h1>Your Sketch4 Title</h1>
+  <h1>Assignment Five</h1>
   <script type="text/processing" data-processing-target="mycanvas4">
   
-  <!-- Your sketch4 goes here -->
+ boolean state = true;
+boolean coffinOpen = false;
+int ghostFreeze = 0;
+int charPos = 50;
+int ghostSize = 20;
+int ghostFeat = 3;
+int fade = 0;
+int background = 0;
+
+void setup()
+{
+  size(1280, 800);
+}
+
+void draw()
+{
+  if (state == true) //#1
+  {
+
+    background(0, 235, 0);
+    //this is all for state one.  change using if loop?(look up)
+    //creates background
+    fill(0, 205, 255);
+    stroke(0, 205, 255);
+    rect(0, 0, 1280, 600); 
+
+    //creates sun
+    fill(250, 250, 0);
+    stroke(250, 250, 0);
+    ellipseMode(CENTER);
+    ellipse(1280, 0, 300, 300);
+
+    //creates cloud
+    fill(255);
+    stroke(255);
+    ellipse(400, 200, 50, 35);
+    ellipse(420, 210, 50, 35);
+    ellipse(400, 220, 50, 35);
+    ellipse(380, 230, 50, 35);
+    ellipse(360, 230, 50, 35);
+    ellipse(340, 230, 50, 35);
+    ellipse(320, 220, 50, 35);
+    ellipse(300, 210, 50, 35);
+    ellipse(320, 200, 50, 35);
+    ellipse(340, 200, 50, 35);
+    ellipse(360, 200, 50, 35);
+    ellipse(340, 190, 50, 35);
+    ellipse(360, 190, 50, 35);
+    ellipse(380, 190, 50, 35);
+
+    //creates coffin
+    stroke(0);
+    fill(100, 100, 100);
+    beginShape();
+    vertex(780, 700);
+    vertex(830, 700);
+    vertex(850, 600);
+    vertex(830, 550);
+    vertex(780, 550);
+    vertex(760, 600);
+    endShape(CLOSE);
+
+    //display text on coffin
+    stroke(0);
+    fill(0);
+    textSize(12);
+    text("do", 795, 565);
+    text("not", 795, 580);
+    text("disturb", 785, 595);
+
+    //displays text prompt
+    if (charPos >= 780 && charPos <= 830)//#2
+    {
+      stroke(0);
+      fill(0);
+      textSize(45);
+      text("Click to disturb", 640, 400);
+    }
+
+    //makes character
+    charPos=constrain(charPos, 50, 1230);
+    fill(255, 100, 0);
+    noStroke();
+    translate(charPos, 750);
+    ellipse(0, 0, 85, 100);
+    ellipse(30, 0, 85, 100);
+    fill(0, 150, 0);
+    rect(10, -60, 10, 20);
+
+
+
+    //makes character move
+    if (keyPressed == true)//#3
+    {
+      if (keyCode == RIGHT)//#4
+      {
+        charPos += 5;
+      } else if (keyCode == LEFT)//#4
+      {
+        charPos -= 5;
+      }
+    }
+
+     else//#3
+    {
+      charPos += 0;
+    }
+  }
+
+  //opens coffin and makes ghost appear
+  if ((coffinOpen==false) && (ghostSize < 1200))//#5
+  {
+    fade = constrain(fade, 0, 255);
+    fill(0);
+    beginShape();
+    vertex(780, 700);
+    vertex(830, 700);
+    vertex(850, 600);
+    vertex(830, 550);
+    vertex(780, 550);
+    vertex(760, 600);
+    endShape(CLOSE);
+
+    fill(100, 100, 100);
+    beginShape();
+    vertex(690, 700);
+    vertex(740, 700);
+    vertex(760, 600);
+    vertex(740, 550);
+    vertex(690, 550);
+    vertex(670, 600);
+    endShape(CLOSE);
+    fill(255, 255, 255, fade);
+    ellipse(800, 600, ghostSize, ghostSize);
+    fill(0, 0, 0, fade);
+    ellipse(805, 600, ghostFeat, ghostFeat);
+    ellipse(797, 600, ghostFeat, ghostFeat);
+    ellipse(802, 605, ghostFeat, ghostFeat);
+
+    if (fade < 255 && background==1)//#6
+    {
+      fade += 1;
+    } else if (fade < 255 && background ==0)
+    {
+    }
+     else//#6
+    {
+      coffinOpen = true;
+    }
+  }
+  //makes ghost appear and grow 
+  else if (ghostSize < 1200 && coffinOpen == true)//#5
+  {
+
+    fill(255);
+    ellipse(800, 600, (ghostSize*2), ghostSize);
+    fill(0);
+    ellipse(797 - ghostFeat, 600 - ghostFeat, (ghostFeat*2), ghostFeat);
+    ellipse(805 + ghostFeat, 600 - ghostFeat, (ghostFeat*2), ghostFeat);
+    ellipse(802, 605 + ghostFeat, (ghostFeat*2), ghostFeat);
+    ghostSize +=6;
+    ghostFeat +=1;
+  } else
+  {
+
+    if (ghostFreeze < 1000)
+    {
+      stateTwo();
+      drawGhost();
+    } else
+    {
+    }
+  }
+}
+
+void drawGhost()
+{
+  float a = random(0, width); 
+  float b = random(0, width); 
+  fill(255);
+  ellipse(a, b, 20, 20);
+  fill(0);
+  ellipse(a+5, b, 3, 3);
+  ellipse(a-3, b, 3, 3);
+  ellipse(a+2, b+5, 3, 3);
+  delay(500);
+  ghostFreeze += 1;
+}
+
+void stateTwo()
+{
+  //draws background 
+  fill(0, 150, 0);
+  rect(0, 600, 1280, 800);
+  fill(0);
+  rect(0, 0, 1280, 600);
+
+  //draws moon
+  fill(255);
+  ellipse(1280, 0, 300, 300);
+
+
+  //draws pumpkin
+  fill(255, 100, 0);
+  ellipse(625, 550, 85, 100);
+  ellipse(655, 550, 85, 100);
+  fill(0, 150, 0);
+  rect(635, 490, 10, 20);
+
+
+  //draws face
+  fill(255, 255, 0);
+  triangle(610, 540, 630, 540, 620, 520);
+  triangle(650, 540, 670, 540, 660, 520);
+
+  arc(640, 560, 60, 40, 0, PI);
+
+  fill(255, 100, 0); 
+  beginShape();
+  vertex(610, 560);
+  vertex(625, 560);
+  vertex(625, 570);
+  vertex(635, 570);
+  vertex(635, 560);
+  vertex(645, 560);
+  vertex(645, 570);
+  vertex(655, 570);
+  vertex(655, 560);
+  vertex(670, 560);
+  endShape(OPEN);
+
+  textSize(60);
+  fill(255, 100, 0);
+  text("Happy Halloween!!!", 400, 200);
+}
+
+
+
+
+void mousePressed()
+{
+  if (charPos >= 780 && charPos <= 830)
+  {
+    state = !state;
+    background = 1;
+  }
+}
 
   </script>
   <canvas id="mycanvas4"></canvas>
-  <p>Description:</p>
+  <p>This weeks theme was Halloween.  it was the week we were introduced to states.</p>
         <br />
         <br />
   <h1>Your Sketch5 Title</h1>
