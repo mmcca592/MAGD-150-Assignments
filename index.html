@@ -12,11 +12,123 @@
   <p>Description: On my FINAL SKETCH ASSIGNMENT</p>
         <br />
         <br />
-  <h1>Your Sketch1 Title</h1>
+  <h1>First Processing Sketch</h1>
   <script type="text/processing" data-processing-target="mycanvas1">
   
-  <!-- Your sketch1 goes here -->
-
+  void setup()
+  {
+   //sets the size of the display screen and sets the backround to dark green
+    size(500,650);
+    background(0);
+    fill(0,255,0,127);
+    rect(0,0,500,650);
+     
+    
+    //creates black rectangles to make the outline of the heart
+    //it also creates the black behind the red for shading purposes
+    fill(0);
+    stroke(0);
+      rectMode(CORNERS);
+        rect(75,0,225,50);
+      
+        rect(225,50,275,100);
+      
+        rect(275,0,425,50);
+       
+        rect(25,50,75,200);
+        
+        rect(75,200,125,250);
+        
+        rect(125,250,175,300);
+        
+        rect(175,300,225,350);
+       
+        rect(225,350,275,400);
+      
+        rect(375,50,475,200);
+        
+        rect(325,200,425,250);
+        
+        rect(275,250,375,300);
+        
+        rect(225,300,325,350);
+       
+       
+   //redefines the stroke and fill color to red so that the heart can be colored
+   fill(255,0,0);
+   stroke(255,0,0);
+      
+      rectMode(CORNERS);
+        rect(125,50,225,200);
+        
+        rect(275,50,375,200);
+        
+        rect(225,100,275,200);
+          
+        rect(125,200,325,250);
+        
+        rect(175,250,275,300);
+        
+        rect(75,150,125,200);
+        
+      
+       
+   //makes some red squares translusent for shading purposes    
+  fill(255,0,0, 150);
+  stroke(255,0,0, 150);
+       
+        rectMode(CORNERS);
+        rect(375,50,425,200);
+        rect(325,200,375,250);
+        rect(275,250,325,300);
+        rect(225,300,275,350);
+        
+  //redefines the fill and stroke to white so that i can color the rest of the heart
+  fill(255);
+  stroke(255);
+      
+  rectMode(CORNERS);
+    rect(75,50,125,150);
+    
+  //draws line as well as writes the letters l,o,and z
+     
+  stroke(255,255,0);
+  fill(255,255,0);
+  
+  line(0,425,500,425);   
+  line(0,450,500,450);
+  point(225,560);
+  point(226,560);
+     
+  rect(50,500,85,625);
+  rect(85,590,125,625);
+  ellipseMode(CENTER);
+   ellipse(225,560,125,125);
+  rect(325,500,430,535);
+ 
+  rect(409,535,430,546);
+  
+  rect(325,590,346,579);
+  
+  rect(346,579,367,568);
+  
+  rect(367,568,388,557);
+  
+  rect(388,557,409,546);
+  
+  rect(325,590,430,625);
+      
+  stroke(0,255,0,127);
+  fill(0,255,0,127);
+  ellipseMode(CORNERS);
+    ellipse(175,500,275,600);
+       
+     
+  stroke(255,255,0);
+  fill(255,255,0);
+  point(225,560);
+      
+ }
   </script>
   <canvas id="mycanvas1"></canvas>
   <p>Description:</p>
