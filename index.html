@@ -5,7 +5,7 @@
   <h1>FINAL SKETCH Azteroid</h1>
   <script type="text/processing" data-processing-target="mycanvas-final">
   
-  //this programs theme is the best I can create.  The game run with minimal bugs and looks pretty good I believe.
+//this programs theme is the best I can create.  The game run with minimal bugs and looks pretty good I believe.
 //main code
 ArrayList <Bullet> bullets;
 PImage ship;
@@ -58,6 +58,45 @@ void keyPressed()
 
 void keyReleased(){
   newMovement.keyReleased(); // the global keyReleased function calls the Movement class keyReleased method.
+}
+
+// spawns asteroids
+void spawn()
+{
+   //this for loops handles the number of Asteroids as well as tracks if life is lost 
+  for(int newAsteroids = numberAsteroids; newAsteroids > 0 ; newAsteroids --)
+  { 
+    
+    asteroids[newAsteroids].update();                      
+    asteroids[newAsteroids].display();
+    asteroids[newAsteroids].move();
+    asteroids[newAsteroids].lifeLoss();
+  }
+  
+  //allows the speed of spawning to increase
+  if(myTimer.isFinished())
+  {
+    numberAsteroids++;
+    myTimer.timerStart();
+  }
+}
+
+// displays lives left
+void lifeCount()
+{
+  if(lives >= 1)
+  {
+    image(ship, 20,550,20,20);
+  }
+  if (lives >= 2)
+  {
+     image(ship,40,550,20,20);
+  }
+  
+  if (lives >= 3)
+  {
+     image(ship,60,550,20,20);
+  }
 }
 
 //Asteroid class
@@ -256,27 +295,6 @@ class Movement
   }   
 }
 
-// spawns asteroids
-void spawn()
-{
-   //this for loops handles the number of Asteroids as well as tracks if life is lost 
-  for(int newAsteroids = numberAsteroids; newAsteroids > 0 ; newAsteroids --)
-  { 
-    
-    asteroids[newAsteroids].update();                      
-    asteroids[newAsteroids].display();
-    asteroids[newAsteroids].move();
-    asteroids[newAsteroids].lifeLoss();
-  }
-  
-  //allows the speed of spawning to increase
-  if(myTimer.isFinished())
-  {
-    numberAsteroids++;
-    myTimer.timerStart();
-  }
-}
-
 // timer class
 class Timer{
   float startTime, stopTime; // two variables to keep track of the time that the timer starts and length of time for the timer.
@@ -314,21 +332,141 @@ class Timer{
   }
 }
 
-// displays lives left
-void lifeCount()
+//states class
+class States
 {
-  if(lives >= 1)
+  boolean state[];
+  String instructions = "Use the A and D keys to move your ship.  Press the right mouse to fire.  How long can you survive?"; 
+  States()
   {
-    image(ship, 20,550,20,20);
+  state = new boolean[4];
+  state[0] = true;
   }
-  if (lives >= 2)
+
+  void stateSwitch()
   {
-     image(ship,40,550,20,20);
+    //opening screen
+  if (state [0])
+  {
+    background(0);
+    fill(0);
+    noStroke();
+    rectMode(CORNERS);
+    rect(0, 150, 600, 250);
+    textSize(120);
+    fill(255,255,0);
+    image(moon,363,145,110,110);
+    text("AZTEROID", 0, 245);
+    fill(0);
+    rect(225, 305, 375, 350);
+    fill(255,255,0);
+    textSize(60);
+    text("PLAY", 225, 350);
+    fill(0);
+    rect(85, 400, 515, 450);
+    fill(255,255,0);
+    text("INSTRUCTIONS", 85, 447);
+  } 
+  //instruction screen
+  else if (state[1])
+  {
+    background(0);
+    fill(0);
+    noStroke();
+    rectMode(CORNERS);
+    rect(0,510,135,555);
+    textSize(50);
+    fill(255,255,0);
+    text("BACK",0, 550);
+    text(instructions,10,10,575,475);
+  }
+ // gameplay
+  else if (state[2])
+  {
+    //cut to game over screen
+    if(lives == 0)
+    {
+      state[3] = true;
+      state[2] = false;
+    }
+    
+    else
+    {
+    background(0);
+    hit = new PVector(bulX, bulY);
+    spawn();
+    moveAll();//move all the bullets
+    displayAll();//display all the bullets
+    newMovement.update();
+    newMovement.display();
+    lifeCount();
+    textSize(10);
+    text("SCORE:" + score, 20, 20); 
+    speed();
+    }
+  } 
+  //game over screen
+  else if (state[3])
+  {
+    background(0);
+    rectMode(CORNERS);
+    fill(0);
+    noStroke();
+    rect(0, 50, 600, 250);
+    fill(255,255,0);
+    textSize(110);
+    text("Game Over",0,140);
+    text("SCORE:" + score,0,245);
+    fill(0);
+    rect(125, 325, 475, 375);
+    fill(255,255,0);
+    textSize(60);
+    text("PLAY AGAIN",125,370);
+    fill(0);
+    rect(125, 475, 475, 525);
+    fill(255,255,0);
+    text("MAIN MENU",130,520);
+  }
   }
   
-  if (lives >= 3)
+  void mousePressed()
   {
-     image(ship,60,550,20,20);
+    //moves to gameplay state
+    if (state[0] && mouseX > 225 && mouseX < 375 && mouseY > 305 && mouseY < 350)
+    {
+      state[0] = false;
+      state[2] = true;
+    }
+    //moves to instuction state
+    if (state[0] && mouseX > 85 && mouseX < 515 && mouseY > 400 && mouseY < 450)
+    {
+      state[0] = false;
+      state[1] = true;
+    }
+    //moves back to main menu state
+        if (state[1] && mouseX > 0 && mouseX < 135 && mouseY > 510 && mouseY < 555)
+    {
+      state[1] = false;
+      state[0] = true;
+    }
+    //moves back to gameplay state and sets gameplay variables back
+        if (state[3] && mouseX > 125 && mouseX < 475 && mouseY > 325 && mouseY < 375)
+    {
+      state[3] = false;
+      state[2] = true;
+      lives = 3;
+      score = 0;
+      numberAsteroids = 0;
+    }
+    //moves back to main menu state and sets gameplay vairables back
+        if (state[3] && mouseX > 125 && mouseX < 475 && mouseY > 475 && mouseY < 525)
+    {
+      state[3] = false;
+      state[0] = true;
+      lives = 3;
+      score = 0;
+      numberAsteroids = 0;
+    }
   }
 }
 
