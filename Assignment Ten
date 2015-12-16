@@ -1,219 +1,463 @@
-int worldX, worldY, buttonCount = 0, radius = 50, blockPlacementX, blockPlacementY;
-float distance = 0;
-PVector light;
-MazeBlocks[] blocks;  //this is an array of MazeBlocks
-MazeBlocks blocksTwo;
-
+//this programs theme is the best I can create.  The game run with minimal bugs and looks pretty good I believe.
+//main code
+ArrayList <Bullet> bullets;
+PImage ship;
+PImage asteroid;
+PImage moon; 
+int radius = 50,numberAsteroids,shipX= 300,shipY= 530, bulX, bulY, lives = 3, score = 0,speed = 0;
+PVector hit;
+Asteroid [] asteroids;
+Timer myTimer;
+Movement newMovement;
+States state;
 
 void setup()
 {
+  bullets = new ArrayList();
+  ship = loadImage("ship.gif");
+  asteroid = loadImage("astroid.jpg");
+  moon = loadImage( "moon.gif");
   size(600, 600);
-  blocks = new MazeBlocks[1000];
-  blocksTwo = new MazeBlocks(100,100);
-  for( int x = 0; x <blocks.length - 1; x++)
+  fill(255,255,0);
+  asteroids = new Asteroid[1000];
+  for( int x = 0; x <asteroids.length - 1; x++)
   {
-    blocks[x] = new MazeBlocks();
+    asteroids[x] = new Asteroid();
   }
+  myTimer = new Timer(5000);
+  myTimer.timerStart();
+  newMovement = new Movement();
+  state = new States();
+   
 }
 
 void draw()
 {
-  background(255);
-  light = new PVector(mouseX, mouseY);
-  light();
-  
-  blocks[0] = new MazeBlocks(400,400);
-  blocks[0].display();
-  blocks[0].update();
-  blocksTwo.display();
-  blocksTwo.update();
-  character();
-  
-  
-  
+ state.stateSwitch();
 }
 
-void keyPressed(){
-  blocksTwo.keyPressed();
-  blocks[0].keyPressed();
-  
-}
 
-//creates character body
-//the sare is 30 30 from center mode
-void character()
+void mousePressed()
 {
-  ellipseMode(CENTER);
-  fill(0);
-  ellipse(300, 300, 30, 30);
+ state.mousePressed();
+Bullet temp = new Bullet(shipX+35,shipY);
+bullets.add(temp);
 }
 
-//creates light halo
-void light()
-{
-  stroke(0);
-  noFill();
-  ellipseMode(RADIUS);
-  ellipse(light.x, light.y, radius, radius);
+void keyPressed()
+{ 
+  newMovement.keyPressed(); // the global keyPressed function calls the Movement class keyPressed method.  
 }
 
+void keyReleased(){
+  newMovement.keyReleased(); // the global keyReleased function calls the Movement class keyReleased method.
+}
 
-void maze()
+// spawns asteroids
+void spawn()
 {
-  /*
-  //makes 1000 instances of the MazeBlocks class
-  for( int x = 0; x <blocks.length - 1; x++)
-  {
-    blocks[x] = new MazeBlocks();
+   //this for loops handles the number of Asteroids as well as tracks if life is lost 
+  for(int newAsteroids = numberAsteroids; newAsteroids > 0 ; newAsteroids --)
+  { 
+    
+    asteroids[newAsteroids].update();                      
+    asteroids[newAsteroids].display();
+    asteroids[newAsteroids].move();
+    asteroids[newAsteroids].lifeLoss();
   }
-  */
   
-  blocks[0] = new MazeBlocks(400,400);
-  blocksTwo.display();
-  blocksTwo.update();
-  blocks[0].display();
-  blocks[0].update();
-  
+  //allows the speed of spawning to increase
+  if(myTimer.isFinished())
+  {
+    numberAsteroids++;
+    myTimer.timerStart();
+  }
 }
 
-
-// MazeBlocks Class
-class MazeBlocks
+// displays lives left
+void lifeCount()
 {
-  int blockFill, blockCenterX, blockCenterY, blockRadius = 25;
+  if(lives >= 1)
+  {
+    image(ship, 20,550,20,20);
+  }
+  if (lives >= 2)
+  {
+     image(ship,40,550,20,20);
+  }
+  
+  if (lives >= 3)
+  {
+     image(ship,60,550,20,20);
+  }
+}
 
+//Asteroid class
+class Asteroid
+{
+  int  asSize = 50, asX, asY;
+  float distance;
   //constructor
-  MazeBlocks()
+  Asteroid()
   {
-    blockCenterX = 5;
-    blockCenterY = 5;
+    asX = round(random(20,550));
+    asY = 0;
   }
 
-  MazeBlocks(int _blockCenterX, int _blockCenterY)
+  //displays Asteroids
+  void display()
   {
-    blockCenterX = _blockCenterX;
-    blockCenterY = _blockCenterY;
+    image(asteroid, asX, asY, asSize, asSize);
   }
 
-  //updates position
   void update()
   {
-    distance = dist(blockPlacementX, blockPlacementY, light.x, light.y);
-    blockPlacementX = blockCenterX+worldX;
-    blockPlacementY = blockCenterY +worldY;
+    println(asY);
+    distance = dist(hit.x, hit.y, asX, asY);
 
-
-    //allows blocks to light up when mouse gets close
-    if (distance  < (radius + blockRadius))
+    //detects collision between bullets and Asteroids
+    if (distance < asSize + 5)
     {
-      stroke(0);
-      blockFill = 180;
-      println("block placementx:" + blockPlacementX + ", block placement y:" + blockPlacementY);
-    } else
-    {
-      blockFill = 0;
-      println("block placementx:" + blockPlacementX + ", block placement y:" + blockPlacementY);
+      asX = round(random(20,550));
+       asY = round(random(-1000,-100));
+      score +=10;
     }
   }
 
+  //makes Asteroids move down  
+  void move()
+  {
+    asY += 1 + speed;
+  }
+  
+  //gets rid of a life if Asteroid moves below 600
+  void lifeLoss()
+{
+  if(asY > 600)
+  {
+    asX = round(random(20,550));
+    asY = round(random(-1000,-100));
+    lives -=1;
+  }
+}
+}
 
-  //displays block
-  //suare around is 50 50
+// bullet class
+class Bullet
+{
+  int x;
+  int y;
+  float speed;
+  
+  //constructor
+  Bullet(int tx, int ty)
+  {
+    x = tx;
+    y = ty;
+  }
+  
+  //displays bullets
   void display()
   {
     stroke(255);
-    fill(blockFill);
-    ellipseMode(RADIUS);
-    ellipse(blockPlacementX, blockPlacementY, blockRadius, blockRadius);
+    rectMode(CENTER);
+    rect(x,y,5,5);
+    bulX = x;
+    bulY = y;
   }
-
-void keyPressed()
+  //moves bullets
+  void move()
+  {
+    y -= 5;
+  }
+  
+  
+}
+ //limits number of bullets on screen
+void removeToLimit(int maxLength)
 {
-  if (blockPlacementX >= 255 && blockPlacementX <= 300 && blockPlacementY > 260 && blockPlacementY < 340)
+  while(bullets.size() > maxLength)
   {
-    if (keyCode == UP)
-    {
-      worldY += 10;
-    }
+    bullets.remove(0);
+  }
+}
 
-    if (keyCode == DOWN)
-    {
-      worldY -= 10;
-    }
-
-    if (keyCode == RIGHT)
-    {
-      worldX -=10;
-    }
-  } else if (blockPlacementX <= 345 && blockPlacementX >= 300&& blockPlacementY > 260 && blockPlacementY < 340)
+//moves all the bullets individually
+void moveAll()
+{
+  for(Bullet temp : bullets)
   {
-    if (keyCode == UP)
-    {
-      worldY += 10;
-    }
+    temp.move();
+  }
+}
 
-    if (keyCode == DOWN)
-    {
-      worldY -= 10;
-    }
-
-    if (keyCode == LEFT)
-    {
-      worldX += 10;
-    }
-  } else if (blockPlacementY >= 255 && blockPlacementY <= 300 && blockPlacementX > 260 && blockPlacementX < 340)
+//display all bullets individually
+void displayAll()
+{
+  for(Bullet temp : bullets)
   {
-    if (keyCode == DOWN)
-    {
-      worldY -= 10;
-    }
+    temp.display();
+  }
+}
 
-    if (keyCode == LEFT)
-    {
-      worldX +=10;
-    }
-
-    if (keyCode == RIGHT)
-    {
-      worldX -= 10;
-    }
-  } else if (blockPlacementY <= 345 && blockPlacementY >= 300 && blockPlacementX > 260 && blockPlacementX < 340)
+//movement class
+class Movement
+{
+  int centerX, centerY;
+  boolean keys[];    // In this array, the index corresponds with A and D.
+  
+  int xVelocity, yVelocity;
+  
+  // constructor
+  Movement()
   {
-    if (keyCode == UP)
-    {
-      worldY += 10;
-    }
+    centerX = 300;
+    centerY = 530;
 
-    if (keyCode == LEFT)
-    {
-      worldX +=10;
-    }
-
-    if (keyCode == RIGHT)
-    {
-      worldX -= 10;
-    }
-  } else
+    keys = new boolean [2];
+  }
+  
+  //displays ship
+  void display()
+  {  
+    image(ship,centerX,centerY,70,70);
+  }
+  
+  //update ship position depending on key pressed
+  void update()
   {
-    if (keyCode == UP)
+    if(keys[0])
     {
-      worldY += 10;
+      xVelocity = -5;
     }
-
-    if (keyCode == DOWN)
+    if(keys[1])
     {
-      worldY -= 10;
+      xVelocity = 5;
     }
-
-    if (keyCode == LEFT)
-    {
-      worldX +=10;
+    // if both Left and Right are released, horizontal velocity should be zero.
+    if(!keys[0] && !keys[1] )
+    { 
+      xVelocity = 0;
     }
-
-    if (keyCode == RIGHT)
+    centerX += xVelocity;
+    centerY += yVelocity;
+    shipX = centerX;
+    shipY = centerY;
+  }
+  
+  //tracks keys pressed
+  void keyPressed()
+  {
+    if(key == 'a')
     {
-      worldX -= 10;
+      keys[0] = true;
+    }
+    if(key == 'A')
+    {
+      keys[0] = true;
+    }
+    if(key == 'd')
+    {
+      keys[1] = true;
+    } 
+     if(key == 'D')
+    {
+      keys[1] = true;
+    } 
+  }
+  
+  //tracks keys released
+  void keyReleased()
+  {  
+    if(key == 'a')
+    {
+      keys[0] = false;
+    }
+    if(key == 'A')
+    {
+      keys[0] = false;
+    }
+    if(key == 'd')
+    {
+      keys[1] = false;
+    } 
+     if(key == 'D')
+    {
+      keys[1] = true;
+    } 
+  }   
+}
+
+// timer class
+class Timer{
+  float startTime, stopTime; // two variables to keep track of the time that the timer starts and length of time for the timer.
+   boolean started = false;  
+  
+  Timer(float _stopTime)
+  {
+    stopTime = _stopTime;
+  }
+  
+  
+  void timerStart()
+  {
+    startTime = millis();
+    started = true;
+  }
+  
+  void stopTimer()
+  {
+    started = false;
+    println("time stopped");
+  }
+  
+  boolean isFinished()
+  {
+    float passedTime = millis() - startTime;
+    if((passedTime > stopTime) && (started)) 
+    {
+      return true;
+    } 
+    else 
+    {
+      return false;
     }
   }
 }
+
+//states class
+class States
+{
+  boolean state[];
+  String instructions = "Use the A and D keys to move your ship.  Press the right mouse to fire.  How long can you survive?"; 
+  States()
+  {
+  state = new boolean[4];
+  state[0] = true;
+  }
+
+  void stateSwitch()
+  {
+    //opening screen
+  if (state [0])
+  {
+    background(0);
+    fill(0);
+    noStroke();
+    rectMode(CORNERS);
+    rect(0, 150, 600, 250);
+    textSize(120);
+    fill(255,255,0);
+    image(moon,363,145,110,110);
+    text("AZTEROID", 0, 245);
+    fill(0);
+    rect(225, 305, 375, 350);
+    fill(255,255,0);
+    textSize(60);
+    text("PLAY", 225, 350);
+    fill(0);
+    rect(85, 400, 515, 450);
+    fill(255,255,0);
+    text("INSTRUCTIONS", 85, 447);
+  } 
+  //instruction screen
+  else if (state[1])
+  {
+    background(0);
+    fill(0);
+    noStroke();
+    rectMode(CORNERS);
+    rect(0,510,135,555);
+    textSize(50);
+    fill(255,255,0);
+    text("BACK",0, 550);
+    text(instructions,10,10,575,475);
+  }
+ // gameplay
+  else if (state[2])
+  {
+    //cut to game over screen
+    if(lives == 0)
+    {
+      state[3] = true;
+      state[2] = false;
+    }
+    
+    else
+    {
+    background(0);
+    hit = new PVector(bulX, bulY);
+    spawn();
+    moveAll();//move all the bullets
+    displayAll();//display all the bullets
+    newMovement.update();
+    newMovement.display();
+    lifeCount();
+    textSize(10);
+    text("SCORE:" + score, 20, 20); 
+    speed();
+    }
+  } 
+  //game over screen
+  else if (state[3])
+  {
+    background(0);
+    rectMode(CORNERS);
+    fill(0);
+    noStroke();
+    rect(0, 50, 600, 250);
+    fill(255,255,0);
+    textSize(110);
+    text("Game Over",0,140);
+    text("SCORE:" + score,0,245);
+    fill(0);
+    rect(125, 325, 475, 375);
+    fill(255,255,0);
+    textSize(60);
+    text("PLAY AGAIN",125,370);
+    fill(0);
+    rect(125, 475, 475, 525);
+    fill(255,255,0);
+    text("MAIN MENU",130,520);
+  }
+  }
+  
+  void mousePressed()
+  {
+    //moves to gameplay state
+    if (state[0] && mouseX > 225 && mouseX < 375 && mouseY > 305 && mouseY < 350)
+    {
+      state[0] = false;
+      state[2] = true;
+    }
+    //moves to instuction state
+    if (state[0] && mouseX > 85 && mouseX < 515 && mouseY > 400 && mouseY < 450)
+    {
+      state[0] = false;
+      state[1] = true;
+    }
+    //moves back to main menu state
+        if (state[1] && mouseX > 0 && mouseX < 135 && mouseY > 510 && mouseY < 555)
+    {
+      state[1] = false;
+      state[0] = true;
+    }
+    //moves back to gameplay state and sets gameplay variables back
+        if (state[3] && mouseX > 125 && mouseX < 475 && mouseY > 325 && mouseY < 375)
+    {
+      state[3] = false;
+      state[2] = true;
+      lives = 3;
+      score = 0;
+      numberAsteroids = 0;
+    }
+    //moves back to main menu state and sets gameplay vairables back
+        if (state[3] && mouseX > 125 && mouseX < 475 && mouseY > 475 && mouseY < 525)
+    {
+      state[3] = false;
+      state[0] = true;
+      lives = 3;
+      score = 0;
+    }
+  }
 }
