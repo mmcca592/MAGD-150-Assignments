@@ -302,17 +302,155 @@ void draw()
 
   </script>
   <canvas id="mycanvas2"></canvas>
-  <p>This assignment was my first introduction to vectors and translate</p>
+  <p>This assignment was my first introduction to vectors and translation.</p>
         <br />
         <br />
-  <h1>Your Sketch3 Title</h1>
+  <h1>Assignment Three</h1>
   <script type="text/processing" data-processing-target="mycanvas3">
   
-  <!-- Your sketch3 goes here -->
+  int maskPrimary = 0;
+int maskSecondary = 0;
+int textColor = 255;
+int pressedKey = 0;
+int pressedKeyState = 0;
+int pressedMouse = 0;
+int pressedMouseState = 0;
+void setup()
+{
+ size(1280,800); 
+}
+
+void draw()
+{
+  maskPrimary = constrain(maskPrimary,0,255);
+  maskSecondary = constrain(maskSecondary,0,255);
+  textColor = constrain(textColor,0,255);
+  background(0);
+  //allows the user to press a key to make the mask appear/fade
+  if(pressedKeyState==1)
+  {
+    maskPrimary = maskPrimary + 1;
+    maskSecondary = maskSecondary + 1;
+  }
+  else
+  {
+   maskPrimary = maskPrimary - 1;
+   maskSecondary = maskSecondary - 1; 
+  }
+  
+  //allows user to click mouse to make text appear/fade
+   if(pressedMouseState==1)
+  {
+    textColor = textColor - 1;
+  }
+  else
+  {
+   textColor = textColor + 1;
+  }
+ //draws the mask outline and ears
+ stroke(0);
+ fill(maskPrimary,0,0);
+ triangle(500,300,500,100,600,400);
+ triangle(780,300,780,100,680,400);
+ ellipseMode(CENTER);
+   ellipse(640,400,400,400);
+   
+   //draws triangles around eyes
+   fill(0);
+   beginShape();
+     vertex(820,320);
+     vertex(700,470);
+     vertex(800,380);
+   endShape(CLOSE);
+   
+   beginShape();
+     vertex(460,320);
+     vertex(580,470);
+     vertex(480,380);
+   endShape(CLOSE);
+   
+   
+  
+  //draws circles around eyes and mouth
+ fill(maskPrimary,maskSecondary,0);
+ ellipse(770,400,125,125);
+ ellipse(510,400,125,125);
+ ellipse(640,548,120,100);
+ 
+  beginShape();
+   vertex(465,500);
+   vertex(495,520);
+   vertex(630,450);
+   vertex(650,450);
+   vertex(785,520);
+   vertex(815,500);
+   vertex(795,530);
+   vertex(780,540);
+   vertex(645,470);
+   vertex(635,470);
+   vertex(500,540);
+   vertex(485,530);
+ endShape(CLOSE);
+ 
+ beginShape();
+   vertex(478,280);
+   vertex(500,270);
+   vertex(570,310);
+   vertex(590,370);
+   vertex(630,410);
+   vertex(650,410);
+   vertex(690,370);
+   vertex(710,310);
+   vertex(780,270);
+   vertex(802,280);
+   vertex(812,300);
+   vertex(790,290);
+   vertex(730,320);
+   vertex(705,380);
+   vertex(665,430);
+   vertex(620,430);
+   vertex(600,410);
+   vertex(570,370);
+   vertex(555,325);
+   vertex(495,285);
+   vertex(470,295);
+ endShape(CLOSE);
+ 
+ //draws eyes and mouth
+ fill(0);
+ arc(770,400,75,75,0,0 + 360);
+ arc(510,400,75,75,0,0 + 360);
+ ellipse(640,548,45,45);
+ 
+ textSize(45);
+ fill(textColor,textColor,textColor,textColor);
+ stroke(textColor,textColor,textColor,textColor);
+ text("Princess Mononoke", mouseX,mouseY);
+ translate(mouseX,mouseY);
+ line(0,0,175,0);
+ line(195,0,417,0);
+ point(0,0);
+ point(195,0);
+ rectMode(CORNERS);
+ rect(0,0,175,3);
+ rect(195,0,417,3);
+}
+
+void keyPressed()
+{
+ pressedKey = pressedKeyState + 1;
+ pressedKeyState = ( pressedKey % 2);
+}
+
+void mousePressed()
+{
+ pressedMouse = pressedMouseState + 1;
+ pressedMouseState = ( pressedMouse % 2);
+}
 
   </script>
   <canvas id="mycanvas3"></canvas>
-  <p>Description:</p>
+  <p>The theme for this week was movies.  I believe this was the week we were introduced to variables.</p>
         <br />
         <br />
   <h1>Your Sketch4 Title</h1>
