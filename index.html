@@ -2,256 +2,63 @@
   <header>
   <script src="https://raw.githubusercontent.com/processing-js/processing-js/v1.4.8/processing.js"></script>
   </header>
-  <h1>Assignment Seven</h1>
+  <h1>Your FINAL SKETCH Title</h1>
+  <script type="text/processing" data-processing-target="mycanvas-final">
+  
+  <!-- Your FINAL SKETCH goes here -->
+
+  </script>
+  <canvas id="mycanvas-final"></canvas>
+  <p>Description: On my FINAL SKETCH ASSIGNMENT</p>
+        <br />
+        <br />
+  <h1>Your Sketch1 Title</h1>
   <script type="text/processing" data-processing-target="mycanvas1">
   
-PImage sun,flowers;  
-
-MusicNote blackMusicNote;
-MusicNote blueMusicNote;
-MusicNote redMusicNote;
-MusicNote orangeMusicNote;
-MusicNote yellowMusicNote;
-float speed=0.0;
-int randomize=1;
-float fall = 0;
-int start = round(random(0, 400));
-int center = start;
-int lives = 3;
-int score = 0;
-int highScore = 0;
-int noteWorth = 50;
-boolean open= true;
-boolean instructions=false;
-boolean game=false;
-boolean gameOver=false;
-
-void setup()
-{
-sun = loadImage("cartoon sun 2.gif");
-flowers = loadImage("flowers 2.gif");
-  size(400, 600);
-  blackMusicNote = new MusicNote(0,0,0,50);
-  blueMusicNote = new MusicNote(0, 50, 150,40);
-  redMusicNote = new MusicNote(150, 0, 0,30);
-  orangeMusicNote = new MusicNote(250, 170, 0,20);
-  yellowMusicNote = new MusicNote(250, 250, 0,10);
-}
-
-void draw()
-{
-
-
-  fill(0, 200, 0);
-  rect(0, 400, 400, 200);
-  fill(0, 200, 250);
-  rect(0, 0, 400, 400);
-  image(sun,75,0);
-  image(flowers,75,400,70,70);
-  
-  if(open == true)
-  {
-    startScreen();
-  }
-  else if(instructions == true)
-  {
-    instructions();
-  }
-  
-   else if (game == true && lives == 0)
-  {
-    gameOver = true;
-    game = false;
-  }
-  
-  else if(game == true)
-  {
-  noteSelector();
-   noteCatcher();
-   text("Score:" + score,20,40);
-   text("lives:" + lives,20,60);
-   println(randomize);
-  }
-  
-  else if(gameOver == true)
-  {
-    gameOver();
-  }
-  
- 
-  
- 
-}
-
-class MusicNote
-{
-
-  int colorR, colorG, colorB, localNoteWorth;
-
-  MusicNote()
-  {
-
-    colorR =0;
-    colorG= 0;
-    colorB = 0;
-  }
-  MusicNote(int colorR2, int colorG2, int colorB2, int noteWorth2)
-  {
-    colorR =colorR2;
-    colorG= colorG2;
-    colorB = colorB2;
-    localNoteWorth = noteWorth2;
-  }
-
-  void display()
-  {
-    fill(colorR, colorG, colorB);
-    noStroke();
-    ellipse(center, fall, 30, 20);
-    rect(center+5, fall, 10, -30);
-    rect(center+5, fall-40, 25, 10);
-    noteWorth = localNoteWorth;
-  }
-
-  void move()
-  {
-    fall+= 3 + speed;
-  }
-}
-
-
-void noteSelector()
-{
-  if (randomize>= 91 && randomize <= 100)
-  {
-    blackMusicNote.display();
-    blackMusicNote.move();
-  } else if (randomize >= 76 && randomize <= 90)
-  {
-    blueMusicNote.display();
-    blueMusicNote.move();
-  } else if (randomize>=56 && randomize <= 75)
-  {
-    redMusicNote.display();
-    redMusicNote.move();
-  } else if (randomize >=31 && randomize <= 55)
-  {
-    orangeMusicNote.display();
-    orangeMusicNote.move();
-  } else if (randomize >= 1 && randomize <= 30)
-  {
-    yellowMusicNote.display();
-    yellowMusicNote.move();
-  }
-}
-void noteCatcher()
-{
-  if (((center+30 > mouseX) && center - 20 < mouseX) && mouseY > 400  && mouseY <= fall+20 && mouseY >= fall-20)
-  {
-   
-    fall=0;
-    center = round(random(0, 400));
-    randomize = round(random(1, 100));
-    speed += .5;
-    println(center);
-    score += noteWorth;
-  }
-  else if (fall >= 600)
-  {
-     fall=0;
-    center = round(random(0, 400));
-    randomize = round(random(1, 100));
-    lives += -1;
-  }
-}
-
-void startScreen()
-{
-    textSize(50);
-  fill(255);
-  text("START",130,200);
-  textSize(30);
-  text("INSTRUCTIONS",105,260);
-}
-
-void instructions()
-{
-  textSize(50);
-  fill(255);
-  text("Instructions",50,50);
-  textSize(30);
-  text("Black notes = 50 points",20,100);
-  text("Blue notes = 40 points",20,150);
-  text("Red notes = 30 points",20,200);
-  text("Orange notes = 20 points",20,250);
-  text("Yellow notes = 10 points",20,300);
-  text("Move your mouse below the green and catch as many notes as you can before you lose all three lives.",
-  20,350,380,500);
-  text("BACK",300,580);
-}
-void gameOver()
-{
-  textSize(50);
-  fill(255);
-  text("GAME OVER",50,200);
-  if( score > highScore)
-  {
-    highScore = score;
-  }
-  text("High Score:" + highScore, 30, 250);
-  textSize(30);
-  text("play again",125,300);
-  text("quit",175,350);
-}
-
-void mousePressed()
-{
-  if(open == true && mouseX >= 130 && mouseX <= 300 
-  && mouseY >=190 && mouseY <= 210)
-  {
-   open = false;
-   game = true;
-   
-  }
-  
-  else if(open == true && mouseX >= 130 && mouseX <= 300 
-  && mouseY >=250 && mouseY <= 270)
-  {
-    instructions = true;
-    open = false;
-    
-  }
-  
-  else if(instructions == true && mouseX >= 300 && mouseX <= 400 
-  && mouseY >=570 && mouseY <= 590)
-  {
-    instructions = false;
-    open = true;
-  }
-  
-  if(gameOver = true && mouseX>=125 && mouseX <= 300 && mouseY <=310 &&
-  mouseY >= 0)
-  {
-    // reset 
-    gameOver = false;
-    game = true;
-    lives = 3;
-    speed = 0.0;
-    score = 0;
-    println("clicked reset");
-  }
-  
-  else if (gameOver = true && mouseX>=125 && mouseX <= 300 && mouseY <=600 &&
-  mouseY >= 310)
-  {
-    gameOver = false;
-    open= true;
-    println("should go start screen");
-  }
-  println("Game: " + game + " open: " + open + " instructions: " + instructions + " gameover: " + gameOver);
-}
+  <!-- Your sketch1 goes here -->
 
   </script>
   <canvas id="mycanvas1"></canvas>
+  <p>Description:</p>
+        <br />
+        <br />
+  <h1>Your Sketch2 Title</h1>
+  <script type="text/processing" data-processing-target="mycanvas2">
+  
+  <!-- Your sketch2 goes here -->
+
+  </script>
+  <canvas id="mycanvas2"></canvas>
+  <p>Description:</p>
+        <br />
+        <br />
+  <h1>Your Sketch3 Title</h1>
+  <script type="text/processing" data-processing-target="mycanvas3">
+  
+  <!-- Your sketch3 goes here -->
+
+  </script>
+  <canvas id="mycanvas3"></canvas>
+  <p>Description:</p>
+        <br />
+        <br />
+  <h1>Your Sketch4 Title</h1>
+  <script type="text/processing" data-processing-target="mycanvas4">
+  
+  <!-- Your sketch4 goes here -->
+
+  </script>
+  <canvas id="mycanvas4"></canvas>
+  <p>Description:</p>
+        <br />
+        <br />
+  <h1>Your Sketch5 Title</h1>
+  <script type="text/processing" data-processing-target="mycanvas5">
+  
+  <!-- Your sketch5 goes here -->
+
+  </script>
+  <canvas id="mycanvas5"></canvas>
+  <p>Description:</p>
   </body>
-</html>
+</html>  
