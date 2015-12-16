@@ -1,0 +1,162 @@
+void setup()
+{
+ size(1280,800);
+ 
+}
+
+void draw()
+{
+  background(0,125,0);
+
+  //draws the basic field lines and flag poles
+  stroke(255);
+  rect(100,47,1,8);
+  rect(1205,47,1,8);
+  triangle(1206,55,1280,75,1280,78);
+  triangle(101,55,0,75,0,78);
+  rect(0,600,1280,10);
+  rect(0,300,1280,8);
+  
+  //draws the arc on the top of the penalty box 
+  fill(0,125,0);
+  strokeWeight(6);
+  arc(640,300,400,100,PI, PI + PI);
+  
+  //draws the horizon line at the end of the field
+  strokeWeight(1);
+  stroke(0);
+  line(101,55,1205,55);
+  
+  //draws the stick figure striker
+  strokeWeight(4);
+  line(300,200,300,400);
+  line(300,325,350,325);
+  line(350,325,350,365);
+  line(300,250,250,300 );
+  line(300,250,350,300);
+   
+  //draws the flags on the flag poles
+  strokeWeight(1);
+  stroke(175,0,0);
+  triangle(100,47,100,49,97,49);
+  triangle(1206,47,1206,49,1209,49);
+  
+  //draws the face of the player and the ball
+  stroke(0);
+  fill(#FCE3E3);
+  ellipseMode(CENTER);
+  ellipse(300,200,50,50);
+  point(290,195);
+  point(310,195);
+  arc(300,205,20,5,0,0 +PI);
+  ellipse(350,385,35,35);
+ 
+  //gets rid of the green backround where it isnt needed
+  fill(#CECACA);
+  beginShape();
+    vertex(0,0);
+    vertex(0,75);
+    vertex(100,55);
+    vertex(100,49);
+    vertex(97,49);
+    vertex(100,47);
+    vertex(101,47);
+    vertex(101,55);
+    vertex(630,55);
+    vertex(630,38);
+    vertex(674,38);
+    vertex(674,55);
+    vertex(1205,55);
+    vertex(1205,47);
+    vertex(1206,47);
+    vertex(1209,49);
+    vertex(1206,47);
+    vertex(1206,55);
+    vertex(1280,75);
+    vertex(1280,0);
+  endShape(CLOSE);
+  
+  //draws the opponents goal
+  fill(255);
+  stroke(0);
+  beginShape();
+    vertex(630,55);
+    vertex(632,55);
+    vertex(632,40);
+    vertex(672,40);
+    vertex(672,55);
+    vertex(674,55);
+    vertex(674,38);
+    vertex(630,38);
+  endShape(CLOSE);
+  
+  
+  //draws the goalie hands and makes them follow the mouse
+  translate(mouseX,mouseY);
+  beginShape();
+   vertex(40,0);
+   vertex(50,-15);
+   vertex(63,-25);
+   vertex(80,-30);
+   vertex(130,25);
+   vertex(130,-175);
+   vertex(155,-175);
+   vertex(180,-165);
+   vertex(180,5);
+   vertex(180,-195);
+   vertex(205,-195);
+   vertex(230,-190);
+   vertex(230,15);
+   vertex(230,-180);
+   vertex(250,-180);
+   vertex(270,-175);
+   vertex(270,25);
+   vertex(270,-165);
+   vertex(305,-155);
+   vertex(310,-115);
+   vertex(315,-55);
+   vertex(315,-15);
+   vertex(312,35);
+   vertex(308,85);
+   vertex(305,115);
+   vertex(301,155);
+   vertex(130,155);
+   vertex(130,105);
+   vertex(40,5);
+   endShape(CLOSE);
+   
+  beginShape();
+   vertex(-40,0);
+   vertex(-50,-15);
+   vertex(-63,-25);
+   vertex(-80,-30);
+   vertex(-130,25);
+   vertex(-130,-175);
+   vertex(-155,-175);
+   vertex(-180,-165);
+   vertex(-180,5);
+   vertex(-180,-195);
+   vertex(-205,-195);
+   vertex(-230,-190);
+   vertex(-230,15);
+   vertex(-230,-180);
+   vertex(-250,-180);
+   vertex(-270,-175);
+   vertex(-270,25);
+   vertex(-270,-165);
+   vertex(-305,-155);
+   vertex(-310,-115);
+   vertex(-315,-55);
+   vertex(-315,-15);
+   vertex(-312,35);
+   vertex(-308,85);
+   vertex(-305,115);
+   vertex(-301,155);
+   vertex(-130,155);
+   vertex(-130,105);
+   vertex(-40,5);
+   endShape(CLOSE);
+   
+  
+  
+}
