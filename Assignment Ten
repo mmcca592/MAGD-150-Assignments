@@ -458,6 +458,7 @@ class States
       state[0] = true;
       lives = 3;
       score = 0;
+      numberAsteroids = 0;
     }
   }
 }
